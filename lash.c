@@ -49,6 +49,28 @@ bool str_startswith(const char *str, const char *match) {
     return true;
 }
 
+void exec_cmd(const char *cmd) {
+    pid_t process;
+    process = fork();
+
+    if (process < 0 )  {
+        say("Couldn't fork!\n");
+        exit_shell = true;        
+    } else if (process == 0) {
+        // We are child process so exec. First arg is path to binary and then
+        // path we used to execute it
+        execl(cmd, cmd, (char *)0);
+    } else {
+        // We are parent so wait for our child to complete 
+        int child_status = 0;
+        wait(&child_status);
+        if (child_status == -1) {
+            say("Error when executing child!\n");
+            exit_shell = true;       
+        }
+    }
+}
+
 void process(const char *input) {
     if (streq(input, "help")) {
         say("You asked for help. What a n00b.\n");
@@ -57,7 +79,8 @@ void process(const char *input) {
     } else if (str_startswith(input, "touch")) {
         say("Would create file\n");
     } else {
-        say("Unknown command!\n");
+        // Assume it's an external program if it's not one of our keywords
+        exec_cmd(input);
     }
 }
 
