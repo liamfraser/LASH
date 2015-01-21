@@ -1,2 +1,2 @@
 default:
-	gcc -fno-builtin -o lash lash.c
+	gcc -g -fno-builtin -o lash lash.c
