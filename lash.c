@@ -33,10 +33,10 @@ bool streq(const char *str1, const char *str2) {
     return (*str2 == '\0');
 }
 
-// HAS A BUG
 bool str_startswith(const char *str, const char *match) {
     unsigned int i = 0;
-    while (i < strlen(match)) {
+    unsigned int mlen = strlen(match);
+    while (i < mlen) {
         if (*str != *match) {
             return false;
         }
